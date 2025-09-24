@@ -1,1 +1,30 @@
+.github/workflows/alerta.yml
+name: Notificación a ntfy.sh
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Ejecutar hola.js
+        run: node hola.js
+
+      - name: Enviar notificación a ntfy.sh
+        run: |
+          BRANCH=${GITHUB_REF#refs/heads/}
+          curl -s -S -X POST -H "Content-Type: text/plain" \
+            --data "Se subió nuevo código en $GITHUB_REPOSITORY (branch: $BRANCH). Commit: $GITHUB_SHA. Actor: $GITHUB_ACTOR." \
+            https://ntfy.sh/devops-itla
 
