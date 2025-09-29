@@ -1,0 +1,29 @@
+name: Notificación de Hola Mundo
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Run Hola Mundo
+        run: node app.js
+
+      - name: Enviar notificación a ntfy.sh
+        run: |
+          curl -s -H "Title: Push to ${{ github.repository }}" --data-binary "Repositorio: ${{ github.repository }}
+          Rama: ${{ github.ref }}
+          Usuario: ${{ github.actor }}
+          Commit: ${{ github.sha }}
+          Mensaje: ${{ github.event.head_commit.message }}" https://ntfy.sh/devops-itla
